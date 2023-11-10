@@ -30,6 +30,7 @@ int Delta() {
     sfClock_restart(deltaclock);
 }
 
+//set up the fullscreen
 int create() {
     WINDOW_X = sfVideoMode_getDesktopMode().width;
     WINDOW_Y = sfVideoMode_getDesktopMode().height;
@@ -47,16 +48,19 @@ int main() {
     srand(time(0));
     create();
 
-    int shipX = 0;
-    int shipY = 0;
-    int shipS = 0;
-    
-
+    float shipX = 1920/2;
+    float shipY = 1080/2;
+    float shipS = 0.5;
+    float shipAngle = -90;
+    sfVector2f dir = (sfVector2f){ 0,0 };
+    sfVector2f str = (sfVector2f){ 0,0 };
+        
     //set up the ship sprite
     sfFloatRect tx_rect = {0,0,22,30};
     sfTexture* textr = sfTexture_createFromFile("asteroids-ship0.png", &tx_rect);
     sfSprite* sprtship = sfSprite_create();
     sfVector2f scale = { 4.5f, 4.5f };
+    sfSprite_setOrigin(sprtship, (sfVector2f) { 11, 15 });
     sfSprite_setScale(sprtship, scale);
     sfSprite_setTexture(sprtship, textr, true);
     sfSprite_setPosition(sprtship, (sfVector2f) { shipX, shipY });
@@ -71,20 +75,48 @@ int main() {
             if (event.type == sfEvtClosed)
                 sfRenderWindow_close(window);
         }
+        //player mouvment
         if (event.type == sfEvtKeyPressed) {
             if (event.key.code == sfKeyLeft) {
-
-            }
-            else if (event.key.code == sfKeyRight) {
-
-            }
-            else if (event.key.code == sfKeyUp)&shipS < 3; {
-                shipS = shipS+0.2;
+                shipAngle -= 3;
                 
             }
-            
+            else if (event.key.code == sfKeyRight) {
+                shipAngle += 3;
+
+            }
+            else if (event.key.code == sfKeyUp); {
+                
+                dir.x = cosf(shipAngle * 3.1415 / 180);
+                dir.y = sinf(shipAngle * 3.1415 / 180);
+                if (fabs(str.x + shipS * dir.x * delta) < fabs(4 * dir.x * delta/1000)) {
+                    str.x += shipS * dir.x * delta;
+                }
+                if (fabs(str.y + shipS * dir.y * delta) < fabs(4 * dir.y * delta/1000)) {
+                    str.y += shipS * dir.y * delta;
+                }
+            }
         }
-            Delta();
+
+        str.x += shipS * dir.x;
+        str.y += shipS * dir.y;
+
+        shipX += str.x;
+        shipY += str.y;
+
+        float a_length = sqrt(str.x * str.x + str.y * str.y);
+        if (a_length != 0) {
+            float normalized_x = str.x / a_length;
+            float normalized_y = str.y / a_length;
+
+            str.x -= 0.5 * normalized_x;
+            str.y -= 0.5 * normalized_y;
+        }
+
+        sfSprite_setRotation(sprtship, shipAngle + 90);
+        sfSprite_setPosition(sprtship, (sfVector2f) { shipX, shipY });
+
+        Delta();
 
         if (sfKeyboard_isKeyPressed(sfKeyEscape)) { sfRenderWindow_close(window); } //quit
 
@@ -94,6 +126,8 @@ int main() {
         sfRenderWindow_display(window);
     }
     sfRenderWindow_destroy(window);
+    sfSprite_destroy(sprtship);
+    sfTexture_destroy(textr);
     sfClock_destroy(deltaclock);
     return 0;
 }
