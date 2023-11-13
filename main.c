@@ -24,6 +24,11 @@ int anim_time = 75;
 sfFont* font1;
 sfRenderWindow* window;
 
+float shipX = 1920 / 2;
+float shipY = 1080 / 2;
+float shipS = 0.52;
+float shipAngle = -90;
+
 int Delta() {
     sfTime dtime = sfClock_getElapsedTime(deltaclock);
     delta = sfTime_asMilliseconds(dtime);
@@ -44,22 +49,40 @@ int create() {
     font1 = sfFont_createFromFile("Font/RetroGaming.ttf");
 }
 
+int wrapAround(sfSprite* sprtship) {
+    sfVector2f position = sfSprite_getPosition(sprtship);
+
+    if (position.x > WINDOW_X) {
+        shipX -= WINDOW_X + 2;
+    }
+    else if (position.x < 0) {
+        shipX += WINDOW_X - 2;
+    }
+
+    if (position.y > WINDOW_Y) {
+        shipY -= WINDOW_Y + 2;
+    }
+    else if (position.y < 0) {
+        shipY += WINDOW_Y - 2;
+    }
+}
+
+int astéroides() {
+
+}
+
 int main() {
     srand(time(0));
     create();
-
-    float shipX = 1920/2;
-    float shipY = 1080/2;
-    float shipS = 0.5;
-    float shipAngle = -90;
+    
     sfVector2f dir = (sfVector2f){ 0,0 };
     sfVector2f str = (sfVector2f){ 0,0 };
-        
+
     //set up the ship sprite
     sfFloatRect tx_rect = {0,0,22,30};
     sfTexture* textr = sfTexture_createFromFile("asteroids-ship0.png", &tx_rect);
     sfSprite* sprtship = sfSprite_create();
-    sfVector2f scale = { 4.5f, 4.5f };
+    sfVector2f scale = { 3.5f, 3.5f };
     sfSprite_setOrigin(sprtship, (sfVector2f) { 11, 15 });
     sfSprite_setScale(sprtship, scale);
     sfSprite_setTexture(sprtship, textr, true);
@@ -89,10 +112,10 @@ int main() {
                 
                 dir.x = cosf(shipAngle * 3.1415 / 180);
                 dir.y = sinf(shipAngle * 3.1415 / 180);
-                if (fabs(str.x + shipS * dir.x * delta) < fabs(4 * dir.x * delta/1000)) {
+                if (fabs(str.x + shipS * dir.x * delta) < fabs(0.5 * dir.x * delta/1000)) {
                     str.x += shipS * dir.x * delta;
                 }
-                if (fabs(str.y + shipS * dir.y * delta) < fabs(4 * dir.y * delta/1000)) {
+                if (fabs(str.y + shipS * dir.y * delta) < fabs(0.5 * dir.y * delta/1000)) {
                     str.y += shipS * dir.y * delta;
                 }
             }
@@ -109,10 +132,12 @@ int main() {
             float normalized_x = str.x / a_length;
             float normalized_y = str.y / a_length;
 
-            str.x -= 0.5 * normalized_x;
-            str.y -= 0.5 * normalized_y;
+            str.x -= 0.51 * normalized_x;
+            str.y -= 0.51 * normalized_y;
         }
 
+        wrapAround(sprtship);
+        
         sfSprite_setRotation(sprtship, shipAngle + 90);
         sfSprite_setPosition(sprtship, (sfVector2f) { shipX, shipY });
 
