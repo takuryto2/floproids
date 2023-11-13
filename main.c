@@ -18,8 +18,6 @@ float delta = 0;
 
 sfClock* deltaclock;
 sfClock* animclock;
-int nframe = 0;
-int anim_time = 75; 
 
 sfFont* font1;
 sfRenderWindow* window;
@@ -98,16 +96,18 @@ int main() {
             if (event.type == sfEvtClosed)
                 sfRenderWindow_close(window);
         }
-        //player mouvment
         
+        //player mouvment
         if (sfKeyboard_isKeyPressed(sfKeyLeft)) {
                 shipAngle -= 3;
                 
         }
+
         else if (sfKeyboard_isKeyPressed(sfKeyRight)) {
             shipAngle += 3;
         }
-        else if (sfKeyboard_isKeyPressed (sfKeyUp)); {
+
+        else if (sfKeyboard_isKeyPressed(sfKeyUp)); {
                 
             dir.x = cosf(shipAngle * 3.1415 / 180);
             dir.y = sinf(shipAngle * 3.1415 / 180);
