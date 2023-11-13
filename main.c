@@ -26,7 +26,7 @@ sfRenderWindow* window;
 
 float shipX = 1920 / 2;
 float shipY = 1080 / 2;
-float shipS = 0.52;
+float shipS = 1;
 float shipAngle = -90;
 
 int Delta() {
@@ -99,30 +99,33 @@ int main() {
                 sfRenderWindow_close(window);
         }
         //player mouvment
-        if (event.type == sfEvtKeyPressed) {
-            if (event.key.code == sfKeyLeft) {
+        
+        if (sfKeyboard_isKeyPressed(sfKeyLeft)) {
                 shipAngle -= 3;
                 
-            }
-            else if (event.key.code == sfKeyRight) {
-                shipAngle += 3;
-
-            }
-            else if (event.key.code == sfKeyUp); {
+        }
+        else if (sfKeyboard_isKeyPressed(sfKeyRight)) {
+            shipAngle += 3;
+        }
+        else if (sfKeyboard_isKeyPressed (sfKeyUp)); {
                 
-                dir.x = cosf(shipAngle * 3.1415 / 180);
-                dir.y = sinf(shipAngle * 3.1415 / 180);
-                if (fabs(str.x + shipS * dir.x * delta) < fabs(0.5 * dir.x * delta/1000)) {
-                    str.x += shipS * dir.x * delta;
-                }
-                if (fabs(str.y + shipS * dir.y * delta) < fabs(0.5 * dir.y * delta/1000)) {
-                    str.y += shipS * dir.y * delta;
-                }
+            dir.x = cosf(shipAngle * 3.1415 / 180);
+            dir.y = sinf(shipAngle * 3.1415 / 180);
+            if (fabs(str.x + shipS * dir.x * delta/1000.0) < fabs(5.0 * dir.x * delta/1000.0)) {
+                str.x += shipS * dir.x * delta/1000.0;
+            }
+            else {
+                str.x = 0;
+            }
+
+            if (fabs(str.y + shipS * dir.y * delta / 1000.0) < fabs(5.0 * dir.y * delta / 1000.0)) {
+                str.y += shipS * dir.y * delta / 1000.0;
+            }
+            else {
+                str.y = 0;
             }
         }
-
-        str.x += shipS * dir.x;
-        str.y += shipS * dir.y;
+        
 
         shipX += str.x;
         shipY += str.y;
@@ -132,8 +135,8 @@ int main() {
             float normalized_x = str.x / a_length;
             float normalized_y = str.y / a_length;
 
-            str.x -= 0.51 * normalized_x;
-            str.y -= 0.51 * normalized_y;
+            str.x -= 0.5 * normalized_x;
+            str.y -= 0.5 * normalized_y;
         }
 
         wrapAround(sprtship);
