@@ -17,14 +17,14 @@ int WINDOW_Y = 1200;
 float delta = 0;
 
 sfClock* deltaclock;
-sfClock* animclock;
+
 
 sfFont* font1;
 sfRenderWindow* window;
 
 float shipX = 1920 / 2;
 float shipY = 1080 / 2;
-float shipS = 1;
+float shipS = 30;
 float shipAngle = -90;
 
 int Delta() {
@@ -43,7 +43,6 @@ int create() {
     sfRenderWindow_setFramerateLimit(window, 144);
 
     deltaclock = sfClock_create();
-    animclock = sfClock_create();
     font1 = sfFont_createFromFile("Font/RetroGaming.ttf");
 }
 
@@ -96,7 +95,26 @@ int main() {
             if (event.type == sfEvtClosed)
                 sfRenderWindow_close(window);
         }
-        
+
+        if (sfKeyboard_isKeyPressed(sfKeyUp)) {
+
+            dir.x = cosf(shipAngle * 3.1415 / 180);
+            dir.y = sinf(shipAngle * 3.1415 / 180);
+            if (fabs(str.x + shipS * dir.x * delta / 100.0) < fabs(150.0 * dir.x * delta / 100.0)) {
+                str.x += shipS * dir.x * delta / 100.0;
+            }
+            else {
+                str.x = 0;
+            }
+
+            if (fabs(str.y + shipS * dir.y * delta / 100.0) < fabs(150.0 * dir.y * delta / 100.0)) {
+                str.y += shipS * dir.y * delta / 100.0;
+            }
+            else {
+                str.y = 0;
+            }
+        }
+
         //player mouvment
         if (sfKeyboard_isKeyPressed(sfKeyLeft)) {
                 shipAngle -= 3;
@@ -107,26 +125,6 @@ int main() {
             shipAngle += 3;
         }
 
-        else if (sfKeyboard_isKeyPressed(sfKeyUp)); {
-                
-            dir.x = cosf(shipAngle * 3.1415 / 180);
-            dir.y = sinf(shipAngle * 3.1415 / 180);
-            if (fabs(str.x + shipS * dir.x * delta/1000.0) < fabs(5.0 * dir.x * delta/1000.0)) {
-                str.x += shipS * dir.x * delta/1000.0;
-            }
-            else {
-                str.x = 0;
-            }
-
-            if (fabs(str.y + shipS * dir.y * delta / 1000.0) < fabs(5.0 * dir.y * delta / 1000.0)) {
-                str.y += shipS * dir.y * delta / 1000.0;
-            }
-            else {
-                str.y = 0;
-            }
-        }
-        
-
         shipX += str.x;
         shipY += str.y;
 
@@ -135,8 +133,8 @@ int main() {
             float normalized_x = str.x / a_length;
             float normalized_y = str.y / a_length;
 
-            str.x -= 0.5 * normalized_x;
-            str.y -= 0.5 * normalized_y;
+            str.x -= 0.15 * normalized_x;
+            str.y -= 0.15 * normalized_y;
         }
 
         wrapAround(sprtship);
