@@ -65,7 +65,14 @@ int wrapAround(sfSprite* sprtship) {
 }
 
 int astéroides() {
-
+    sfFloatRect tx_rock = { 0,0,22,30 };
+    sfTexture* textrock = sfTexture_createFromFile("asteroids-asteroids(B)_0.png", &tx_rock);
+    sfSprite* sprtrock = sfSprite_create();
+    sfVector2f scale = { 3.5f, 3.5f };
+    sfSprite_setOrigin(sprtrock, (sfVector2f) { 11, 15 });
+    sfSprite_setScale(sprtrock, scale);
+    sfSprite_setTexture(sprtrock, textrock, true);
+    sfSprite_setPosition(sprtrock, (sfVector2f) { shipX, shipY });
 }
 
 int main() {
@@ -77,12 +84,12 @@ int main() {
 
     //set up the ship sprite
     sfFloatRect tx_rect = {0,0,22,30};
-    sfTexture* textr = sfTexture_createFromFile("asteroids-ship0.png", &tx_rect);
+    sfTexture* textrship = sfTexture_createFromFile("asteroids-ship0.png", &tx_rect);
     sfSprite* sprtship = sfSprite_create();
     sfVector2f scale = { 3.5f, 3.5f };
     sfSprite_setOrigin(sprtship, (sfVector2f) { 11, 15 });
     sfSprite_setScale(sprtship, scale);
-    sfSprite_setTexture(sprtship, textr, true);
+    sfSprite_setTexture(sprtship, textrship, true);
     sfSprite_setPosition(sprtship, (sfVector2f) { shipX, shipY });
     
     //set up view charging
@@ -117,11 +124,10 @@ int main() {
 
         //player mouvment
         if (sfKeyboard_isKeyPressed(sfKeyLeft)) {
-                shipAngle -= 3;
-                
+          shipAngle -= 3;        
         }
 
-        else if (sfKeyboard_isKeyPressed(sfKeyRight)) {
+        if (sfKeyboard_isKeyPressed(sfKeyRight)) {
             shipAngle += 3;
         }
 
@@ -133,8 +139,8 @@ int main() {
             float normalized_x = str.x / a_length;
             float normalized_y = str.y / a_length;
 
-            str.x -= 0.15 * normalized_x;
-            str.y -= 0.15 * normalized_y;
+            str.x -= 0.17 * normalized_x;
+            str.y -= 0.17 * normalized_y;
         }
 
         wrapAround(sprtship);
@@ -153,7 +159,8 @@ int main() {
     }
     sfRenderWindow_destroy(window);
     sfSprite_destroy(sprtship);
-    sfTexture_destroy(textr);
+    sfTexture_destroy(textrship);
+ 
     sfClock_destroy(deltaclock);
     return 0;
 }
