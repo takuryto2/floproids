@@ -27,14 +27,14 @@ float shipY = 1080 / 2;
 float shipS = 30;
 float shipAngle = -90;
 
-int Delta() {
+void Delta() {
     sfTime dtime = sfClock_getElapsedTime(deltaclock);
     delta = sfTime_asMilliseconds(dtime);
     sfClock_restart(deltaclock);
 }
 
 //set up the fullscreen
-int create() {
+void create() {
     WINDOW_X = sfVideoMode_getDesktopMode().width;
     WINDOW_Y = sfVideoMode_getDesktopMode().height;
     sfVideoMode mode = { WINDOW_X, WINDOW_Y, 32 };
@@ -46,7 +46,7 @@ int create() {
     font1 = sfFont_createFromFile("Font/RetroGaming.ttf");
 }
 
-int wrapAround(sfSprite* sprtship) {
+void wrapAround(sfSprite* sprtship) {
     sfVector2f position = sfSprite_getPosition(sprtship);
 
     if (position.x > WINDOW_X) {
@@ -64,7 +64,7 @@ int wrapAround(sfSprite* sprtship) {
     }
 }
 
-int astéroides() {
+void summonrock() {
     sfFloatRect tx_rock = { 0,0,22,30 };
     sfTexture* textrock = sfTexture_createFromFile("asteroids-asteroids(B)_0.png", &tx_rock);
     sfSprite* sprtrock = sfSprite_create();
@@ -73,6 +73,17 @@ int astéroides() {
     sfSprite_setScale(sprtrock, scale);
     sfSprite_setTexture(sprtrock, textrock, true);
     sfSprite_setPosition(sprtrock, (sfVector2f) { shipX, shipY });
+}
+
+void asteroid(){
+    sfVector2f rock = (sfVector2f){ 0,0 };
+    float RockSpeed = 1;
+    float RockAngle = -90;
+
+    RockAngle = ((float)rand() / 360);
+
+    rock.x = cosf(RockAngle * 3.1415 / 180);
+    rock.y = sinf(RockAngle * 3.1415 / 180);
 }
 
 int main() {
