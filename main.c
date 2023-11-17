@@ -46,28 +46,28 @@ void create() {
     font1 = sfFont_createFromFile("Font/RetroGaming.ttf");
 }
 
-void wrapAround(sfSprite* sprtship) {
+void wrapAround(sfSprite* sprtship ) {
     sfVector2f position = sfSprite_getPosition(sprtship);
 
     if (position.x > WINDOW_X) {
         shipX -= WINDOW_X + 2;
     }
-    else if (position.x < 0) {
+    if (position.x < 0) {
         shipX += WINDOW_X - 2;
     }
-
     if (position.y > WINDOW_Y) {
         shipY -= WINDOW_Y + 2;
     }
-    else if (position.y < 0) {
+    if (position.y < 0) {
         shipY += WINDOW_Y - 2;
     }
 }
 
 struct valorasteroid {
     sfVector2f rock;
-    float RockSpeed;
-    float RockAngle;
+    sfVector2f strock;
+    float RockS;
+    float RockAng;
 };
 
 void summonrock() {
@@ -91,14 +91,17 @@ void asteroid(){
     struct valorasteroid move; {}
     
     move.rock = (sfVector2f){ 0,0 };
-    move.RockSpeed = 1;
-    move.RockAngle = -90;
+    move.strock = (sfVector2f){ 0,0 };
+    move.RockS = 1;
+    move.RockAng = -90;
 
-    move.RockAngle = ((float)rand() / 360);
-    move.RockSpeed = ((float)rand() / 5);
+    move.RockAng = ((float)rand() / 360);
+    move.RockS = ((float)rand() / 5);
 
-    move.rock.x = cosf(move.RockAngle * 3.1415 / 180);
-    move.rock.y = sinf(move.RockAngle * 3.1415 / 180);
+    move.rock.x = cosf(move.RockAng * 3.1415 / 180);
+    move.rock.y = sinf(move.RockAng * 3.1415 / 180);
+    move.strock.x += move.RockS * move.rock.x * delta / 100.0;
+    move.strock.y += move.RockS * move.rock.y * delta / 100.0;
 }
 
 void colasteroid() {
