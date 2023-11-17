@@ -64,32 +64,52 @@ void wrapAround(sfSprite* sprtship) {
     }
 }
 
+struct valorasteroid {
+    sfVector2f rock;
+    float RockSpeed;
+    float RockAngle;
+};
+
 void summonrock() {
+
+    struct valorasteroid xy; 
+
     sfFloatRect tx_rock = { 0,0,22,30 };
     sfTexture* textrock = sfTexture_createFromFile("asteroids-asteroids(B)_0.png", &tx_rock);
     sfSprite* sprtrock = sfSprite_create();
     sfVector2f scale = { 3.5f, 3.5f };
-    sfSprite_setOrigin(sprtrock, (sfVector2f) { 11, 15 });
+    xy.rock.x = 100;
+    xy.rock.y = 100;
+    sfSprite_setOrigin(sprtrock, (sfVector2f) { 30, 30 });
     sfSprite_setScale(sprtrock, scale);
     sfSprite_setTexture(sprtrock, textrock, true);
-    sfSprite_setPosition(sprtrock, (sfVector2f) { shipX, shipY });
+    sfSprite_setPosition(sprtrock, (sfVector2f) { xy.rock.x, xy.rock.y });
 }
 
 void asteroid(){
-    sfVector2f rock = (sfVector2f){ 0,0 };
-    float RockSpeed = 1;
-    float RockAngle = -90;
+    
+    struct valorasteroid move; {}
+    
+    move.rock = (sfVector2f){ 0,0 };
+    move.RockSpeed = 1;
+    move.RockAngle = -90;
 
-    RockAngle = ((float)rand() / 360);
+    move.RockAngle = ((float)rand() / 360);
+    move.RockSpeed = ((float)rand() / 5);
 
-    rock.x = cosf(RockAngle * 3.1415 / 180);
-    rock.y = sinf(RockAngle * 3.1415 / 180);
+    move.rock.x = cosf(move.RockAngle * 3.1415 / 180);
+    move.rock.y = sinf(move.RockAngle * 3.1415 / 180);
+}
+
+void colasteroid() {
+
 }
 
 int main() {
     srand(time(0));
     create();
-    
+    summonrock();
+
     sfVector2f dir = (sfVector2f){ 0,0 };
     sfVector2f str = (sfVector2f){ 0,0 };
 
@@ -154,6 +174,7 @@ int main() {
             str.y -= 0.17 * normalized_y;
         }
 
+        asteroid();
         wrapAround(sprtship);
         
         sfSprite_setRotation(sprtship, shipAngle + 90);
@@ -171,7 +192,7 @@ int main() {
     sfRenderWindow_destroy(window);
     sfSprite_destroy(sprtship);
     sfTexture_destroy(textrship);
- 
+
     sfClock_destroy(deltaclock);
     return 0;
 }
