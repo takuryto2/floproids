@@ -24,8 +24,29 @@ sfRenderWindow* window;
 
 float shipX = 1920 / 2;
 float shipY = 1080 / 2;
-float shipS = 30;
+float shipS = 15;
 float shipAngle = -90;
+
+struct valorasteroid {
+
+    sfVector2f rock;
+    sfVector2f dirock;
+    sfVector2f strock;
+    float RockS;
+    float RockAng;
+    sfTexture* textrock;
+    sfSprite* sprtrock;
+};
+
+struct valorlaser {
+    sfVector2f laser;
+    sfVector2f dirlaser;
+    sfVector2f strlaser;
+    float laserS;
+    float laserAng;
+    sfTexture* textrlaser;
+    sfSprite* sprtlaser;
+};
 
 void Delta() {
     sfTime dtime = sfClock_getElapsedTime(deltaclock);
@@ -63,55 +84,85 @@ void wrapAround(sfSprite* sprtship ) {
     }
 }
 
-struct valorasteroid {
-    sfVector2f rock;
-    sfVector2f strock;
-    float RockS;
-    float RockAng;
-};
-
-void summonrock() {
-
-    struct valorasteroid xy; 
-
+void summonrock(struct valorasteroid *mai) {
+    //create and draws the asteroid
     sfFloatRect tx_rock = { 0,0,22,30 };
-    sfTexture* textrock = sfTexture_createFromFile("asteroids-asteroids(B)_0.png", &tx_rock);
-    sfSprite* sprtrock = sfSprite_create();
+    mai->textrock = sfTexture_createFromFile("asteroids-asteroids(B)_0.png", &tx_rock);
+    mai->sprtrock = sfSprite_create();
     sfVector2f scale = { 3.5f, 3.5f };
-    xy.rock.x = 100;
-    xy.rock.y = 100;
-    sfSprite_setOrigin(sprtrock, (sfVector2f) { 30, 30 });
-    sfSprite_setScale(sprtrock, scale);
-    sfSprite_setTexture(sprtrock, textrock, true);
-    sfSprite_setPosition(sprtrock, (sfVector2f) { xy.rock.x, xy.rock.y });
+    mai->rock.x = 100;
+    mai->rock.y = 100;
+    sfSprite_setOrigin(mai->sprtrock, (sfVector2f) { 30, 30 });
+    sfSprite_setScale(mai->sprtrock, scale);
+    sfSprite_setTexture(mai->sprtrock, mai->textrock, true);
+    sfSprite_setPosition(mai->sprtrock, (sfVector2f) { mai->rock.x, mai->rock.y });
+    sfRenderWindow_drawSprite(window, mai->sprtrock, NULL);
 }
 
-void asteroid(){
+void asteroid(struct valorasteroid *mai){
     
-    struct valorasteroid move; {}
-    
-    move.rock = (sfVector2f){ 0,0 };
-    move.strock = (sfVector2f){ 0,0 };
-    move.RockS = 1;
-    move.RockAng = -90;
+    mai->rock = (sfVector2f){ 0,0 };
+    mai->dirock = (sfVector2f){ 0,0 };
+    mai->strock = (sfVector2f){ 0,0 };
+    mai->RockS = 1;
+    mai->RockAng = -90;
 
-    move.RockAng = ((float)rand() / 360);
-    move.RockS = ((float)rand() / 5);
+    mai->RockAng = ((float)rand() / 360);
+    mai->RockS = ((float)rand() / 5);
 
-    move.rock.x = cosf(move.RockAng * 3.1415 / 180);
-    move.rock.y = sinf(move.RockAng * 3.1415 / 180);
-    move.strock.x += move.RockS * move.rock.x * delta / 100.0;
-    move.strock.y += move.RockS * move.rock.y * delta / 100.0;
+    mai->dirock.x = cosf(mai->RockAng * 3.1415 / 180);
+    mai->dirock.y = sinf(mai->RockAng * 3.1415 / 180);
+    mai->strock.x += mai->RockS * mai->rock.x * delta / 100.0;
+    mai->strock.y += mai->RockS * mai->rock.y * delta / 100.0;
+    mai->rock.x += mai->strock.x;
+    mai->rock.y += mai->strock.y;
 }
 
-void colasteroid() {
+void summonlaser(struct valorlaser *mai) {
+    //create and draws the asteroid
+    sfFloatRect tx_laser = { 0,0,22,30 };
+    mai->textrlaser = sfTexture_createFromFile("", &tx_laser);
+    mai->sprtlaser = sfSprite_create();
+    sfVector2f scale = { 3.5f, 3.5f };
+    mai->laser.x = 100;
+    mai->laser.y = 100;
+    sfSprite_setOrigin(mai->sprtlaser, (sfVector2f) { 30, 30 });
+    sfSprite_setScale(mai->sprtlaser, scale);
+    sfSprite_setTexture(mai->sprtlaser, mai->textrlaser, true);
+    sfSprite_setPosition(mai->sprtlaser, (sfVector2f) { mai->laser.x, mai->laser.y });
+    sfRenderWindow_drawSprite(window, mai->sprtlaser, NULL);
+}
+
+void laser(struct valorlaser* mai) {
+    mai->laser = (sfVector2f){ 0,0 };
+    mai->dirlaser = (sfVector2f){ 0,0 };
+    mai->strlaser = (sfVector2f){ 0,0 };
+    mai->laserS = 1;
+    mai->laserAng = -90;
+
+    mai->laserAng = ((float)rand() / 360);
+    mai->laserS = ((float)rand() / 5);
+
+    mai->dirlaser.x = cosf(mai->laserAng * 3.1415 / 180);
+    mai->dirlaser.y = sinf(mai->laserAng * 3.1415 / 180);
+    mai->strlaser.x += mai->laserS * mai->laser.x * delta / 100.0;
+    mai->strlaser.y += mai->laserS * mai->laser.y * delta / 100.0;
+    mai->laser.x += mai->strlaser.x;
+    mai->laser.y += mai->strlaser.y;
+}
+
+void colaser() {
 
 }
+
+
+
 
 int main() {
+    struct valorasteroid mai;
     srand(time(0));
     create();
-    summonrock();
+    summonrock(&mai);
 
     sfVector2f dir = (sfVector2f){ 0,0 };
     sfVector2f str = (sfVector2f){ 0,0 };
@@ -177,7 +228,14 @@ int main() {
             str.y -= 0.17 * normalized_y;
         }
 
-        asteroid();
+        if (shipX > mai.rock.x + 30 && shipX < mai.rock.x - 30);
+            shipX = 1920 / 2;
+            shipY = 1080 / 2;
+        if (shipY > mai.rock.y + 30 && shipX < mai.rock.x - 30);
+            shipX = 1920 / 2;
+            shipY = 1080 / 2;
+
+        asteroid(&mai);
         wrapAround(sprtship);
         
         sfSprite_setRotation(sprtship, shipAngle + 90);
@@ -195,7 +253,8 @@ int main() {
     sfRenderWindow_destroy(window);
     sfSprite_destroy(sprtship);
     sfTexture_destroy(textrship);
-
+    sfSprite_destroy(mai.sprtrock);
+    sfSprite_destroy(mai.textrock);
     sfClock_destroy(deltaclock);
     return 0;
 }
